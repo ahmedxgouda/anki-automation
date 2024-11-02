@@ -12,11 +12,12 @@ def main():
 
 def get_pdf_paths():
     # Get the path to the PDF file
-    pdf_path = input("Enter the path to the PDF file: ")
-    file_names = [f for f in os.listdir(pdf_path) if f.endswith('.pdf')]
-    pdf_paths = [os.path.join(pdf_path, f) for f in file_names]
+    pdf_path = input('Enter the path to the PDF file(s): ')
+    pdf_paths = []
+    for root, dirs, files in os.walk(pdf_path):
+        if files:
+            pdf_paths.extend([os.path.join(root, f) for f in files if f.endswith('.pdf')])
     return pdf_paths
-
 
 def pdf_to_images(pdf_path, output_folder):
     # Convert PDF to a list of images

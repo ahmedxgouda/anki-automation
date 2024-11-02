@@ -1,11 +1,11 @@
 import base64
 import os
 import requests
+from pdf_to_images import pdf_to_images
 
 def main():
     # receive the deck folder path
-    deckFolder = input('Enter the deck folder path: ')
-    print("Deck from main: ", deckFolder)
+    deckFolder = input('Enter the deck folder path: ') 
     createDeckFromFolder(deckFolder)
     
     
@@ -76,7 +76,15 @@ def createDeckFromFolder(deckFolder: str):
             if file.endswith((".png", ".jpg", ".jpeg", ".gif")):
                 image_path = os.path.join(root, file)
                 addNoteWithImage(deckPath, image_path)
+            elif file.endswith(".pdf"):
+                print(f"Adding images from PDF: {file}")
+                pdf_path = os.path.join(root, file)
+                output_folder = pdf_path.replace('.pdf', '')
+                pdf_to_images(pdf_path, output_folder)
+                for image in os.listdir(output_folder):
+                    image_path = os.path.join(output_folder, image)
+                    addNoteWithImage(deckPath, image_path)
     print("Done adding images.")
-
+    
 if __name__ == "__main__":
     main()
