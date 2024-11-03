@@ -5,8 +5,12 @@ from pdf_to_images import pdf_to_images
 
 def main():
     # receive the deck folder path
-    deckFolder = input('Enter the deck folder path: ') 
-    createDeckFromFolder(deckFolder)
+    deckFolder = input('Enter the deck folder path: ')
+    convertAndAddPdf = input('Do you want to convert PDFs to images and add them to Anki? (y/n): ')
+    while convertAndAddPdf.lower() not in ['y', 'n']:
+        convertAndAddPdf = input('Please enter y or n: ')
+    toConvert = convertAndAddPdf.lower() == 'y'
+    createDeckFromFolder(deckFolder, toConvert)
     
     
 def addNoteWithImage(deckName, imagePath):
@@ -64,7 +68,7 @@ def createDeck(deckName):
     else:
         print(f"Deck '{deckName}' already exists.")
         
-def createDeckFromFolder(deckFolder: str):
+def createDeckFromFolder(deckFolder: str, convertPdf: bool):
     folders = deckFolder.split(os.sep)
     folderBeforeDeck = os.sep.join(folders[0:len(folders) - 1])
     for root, dirs, files in os.walk(deckFolder):
@@ -76,10 +80,12 @@ def createDeckFromFolder(deckFolder: str):
             if file.endswith((".png", ".jpg", ".jpeg", ".gif")):
                 image_path = os.path.join(root, file)
                 addNoteWithImage(deckPath, image_path)
-            elif file.endswith(".pdf"):
+            elif convertPdf and file.endswith(".pdf"):
                 print(f"Adding images from PDF: {file}")
                 pdf_path = os.path.join(root, file)
                 output_folder = pdf_path.replace('.pdf', '')
+                # TODO: Create deck for the PDF
+                
                 pdf_to_images(pdf_path, output_folder)
                 for image in os.listdir(output_folder):
                     image_path = os.path.join(output_folder, image)
