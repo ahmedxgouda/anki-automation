@@ -2,6 +2,7 @@ import base64
 import os
 import requests
 from pdf_to_images import pdf_to_images
+import re
 
 def main():
     # receive the deck folder path
@@ -88,7 +89,10 @@ def createDeckFromFolder(deckFolder: str, convertPdf: bool):
                 pdfDeckPath = deckPath + "::" + file.replace(".pdf", "")
                 createDeck(pdfDeckPath)
                 pdf_to_images(pdf_path, output_folder)
-                for image in os.listdir(output_folder):
+                images = os.listdir(output_folder)
+                # sort by numbers from 1, 2, 3 and so on
+                images = sorted(images, key=lambda x: int(re.search(r'\d+', x).group()))
+                for image in images:
                     image_path = os.path.join(output_folder, image)
                     addNoteWithImage(pdfDeckPath, image_path)
     print("Done adding images.")
