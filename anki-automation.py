@@ -77,7 +77,8 @@ def createDeckFromFolder(deckFolder: str, convertPdf: bool):
         deckPath = root.replace(folderBeforeDeck, "").strip(os.sep).replace(os.sep, "::")
         if deckPath:
             createDeck(deckPath)
-        for file in files:
+        sortedFiles = sorted(files, key=lambda x: int(re.search(r'\d+', x).group()))
+        for file in sortedFiles:
             if file.endswith((".png", ".jpg", ".jpeg", ".gif")):
                 image_path = os.path.join(root, file)
                 addNoteWithImage(deckPath, image_path)
