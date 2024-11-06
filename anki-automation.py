@@ -84,20 +84,6 @@ def createDeckFromFolder(deckFolder: str):
             if file.endswith((".png", ".jpg", ".jpeg", ".gif")):
                 image_path = os.path.join(root, file)
                 addNoteWithImage(deckPath, image_path)
-            elif convertPdf and file.endswith(".pdf"):
-                print(f"Adding images from PDF: {file}")
-                pdf_path = os.path.join(root, file)
-                output_folder = pdf_path.replace('.pdf', '')
-                # Create the deck path for the PDF
-                pdfDeckPath = deckPath + "::" + file.replace(".pdf", "")
-                createDeck(pdfDeckPath)
-                pdf_to_images(pdf_path, output_folder)
-                images = os.listdir(output_folder)
-                # sort by numbers from 1, 2, 3 and so on
-                images = sorted(images, key=sortByNumber)
-                for image in images:
-                    image_path = os.path.join(output_folder, image)
-                    addNoteWithImage(pdfDeckPath, image_path)
     print("Done adding images.")
 
 if __name__ == "__main__":
