@@ -72,12 +72,19 @@ def createDeck(deckName):
 def createDeckFromFolder(deckFolder: str, convertPdf: bool):
     folders = deckFolder.split(os.sep)
     folderBeforeDeck = os.sep.join(folders[0:len(folders) - 1])
+    
+    def sortByNumber(file):
+        regex = re.search(r'\d+', file)
+        if regex:
+            return int(regex.group())
+        return 0
+    
     for root, dirs, files in os.walk(deckFolder):
         # needs to be fixed
         deckPath = root.replace(folderBeforeDeck, "").strip(os.sep).replace(os.sep, "::")
         if deckPath:
             createDeck(deckPath)
-        sortedFiles = sorted(files, key=lambda x: int(re.search(r'\d+', x).group()))
+        sortedFiles = sorted(files, key=sortByNumber)
         for file in sortedFiles:
             if file.endswith((".png", ".jpg", ".jpeg", ".gif")):
                 image_path = os.path.join(root, file)
@@ -92,7 +99,7 @@ def createDeckFromFolder(deckFolder: str, convertPdf: bool):
                 pdf_to_images(pdf_path, output_folder)
                 images = os.listdir(output_folder)
                 # sort by numbers from 1, 2, 3 and so on
-                images = sorted(images, key=lambda x: int(re.search(r'\d+', x).group()))
+                images = sorted(images, key=sortByNumber)
                 for image in images:
                     image_path = os.path.join(output_folder, image)
                     addNoteWithImage(pdfDeckPath, image_path)
